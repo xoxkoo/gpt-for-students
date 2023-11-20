@@ -1,0 +1,34 @@
+$btn_colors: (
+	'light': #fff,
+	'dark': #000,
+	'primary': gold,
+);
+
+@mixin btn {
+	font-size: 1.05rem;
+	color: #000;
+	border: 1px solid transparent;
+	margin: 0 auto;
+	padding: 0.7em 2.25em;
+	width: 188px;
+	cursor: pointer;
+	border-radius: $border_radius;
+	position: relative;
+}
+@each $name, $color in $btn_colors {
+	.btn-#{$name} {
+		@include btn();
+		background: $color;
+		&:focus,
+		&:hover {
+			background: darken($color, 6);
+		}
+	}
+	.btn-#{$name}-outline {
+		border-color: $color;
+		&:focus,
+		&:hover {
+			border-color: darken($color, 6);
+		}
+	}
+}
