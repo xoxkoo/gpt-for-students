@@ -3,7 +3,7 @@ version: '3.3'
 services:
   backend:
     container_name: backend
-    build: 
+    build:
       context: ./backend
     volumes:
       - ./backend:/app
@@ -16,7 +16,5 @@ services:
       context: ./frontend
     ports:
       - "5173:5173"
-    volumes:
-      - ./frontend:/app
     depends_on:
       - backend
