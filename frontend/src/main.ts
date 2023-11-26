@@ -6,6 +6,8 @@ import router from './router';
 import PrimeVue from 'primevue/config';
 import i18n from './i18n';
 import Button from 'primevue/button';
+import InputText from 'primevue/inputtext';
+import FileUpload from 'primevue/fileupload';
 
 import 'primeicons/primeicons.css';
 import './assets/scss/tailwind.css';
@@ -20,6 +22,9 @@ app.use(createPinia());
 app.use(router);
 
 app.use(PrimeVue);
+// eslint-disable-next-line vue/no-reserved-component-names, vue/multi-word-component-names
 app.component('Button', Button);
+app.component('FileUpload', FileUpload);
+app.component('InputText', InputText);
 
 app.mount('#app');
