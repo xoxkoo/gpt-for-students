@@ -1,23 +1,37 @@
 <template>
 	<div class="card">
-		<!-- <Toast /> -->
 		<FileUpload
-			name="demo[]"
-			url="/api/upload"
-			@upload="console.log('a')"
-			:multiple="true"
-			accept="image/*"
-			:maxFileSize="1000000"
+			name="summarize_file"
+			:url="`${ENDPOINT_URL}upload/`"
+			mode="advanced"
+			:auto="true"
+			@upload="onUpload"
+			:multiple="false"
+			accept=".pdf"
+			:maxFileSize="1048576"
+			:cancelLabel="$t('cancel')"
+			:chooseLabel="$t('choose')"
+			:uploadLabel="$t('upload')"
 		>
 			<template #empty>
-				<p>Drag and drop files to here to upload.</p>
+				<p>{{ $t('dragAndDropFiles') }}</p>
 			</template>
 		</FileUpload>
 	</div>
 </template>
 
 <script setup lang="ts">
-// const onAdvancedUpload = () => {
-// 	toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
-// };
+import { ENDPOINT_URL } from '../utils/constants';
+
+const onUpload = (request: any) => {
+	// Handle the response here
+	if (request.xhr.status == 200) {
+		const response = JSON.parse(request.xhr.response);
+
+		if (response && response.file_id) {
+			const { file_id } = response;
+			console.log(file_id);
+		}
+	}
+};
 </script>

@@ -1,3 +1,5 @@
+/* eslint-disable vue/no-reserved-component-names */
+/* eslint-disable vue/multi-word-component-names */
 import { createApp } from 'vue';
 import { createPinia } from 'pinia';
 
@@ -8,6 +10,7 @@ import i18n from './i18n';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import FileUpload from 'primevue/fileupload';
+import ToastService from 'primevue/toastservice';
 
 import 'primeicons/primeicons.css';
 import './assets/scss/tailwind.css';
@@ -22,7 +25,7 @@ app.use(createPinia());
 app.use(router);
 
 app.use(PrimeVue);
-// eslint-disable-next-line vue/no-reserved-component-names, vue/multi-word-component-names
+app.use(ToastService);
 app.component('Button', Button);
 app.component('FileUpload', FileUpload);
 app.component('InputText', InputText);

@@ -4,8 +4,8 @@ import { PDF_Request } from '../model';
 
 const httpCLient = axios.create();
 
-export const summarizationService = {
-	url: `${ENDPOINT_URL}summarization`,
+export const fileService = {
+	url: `${ENDPOINT_URL}upload`,
 
 	async get(endopint: string) {
 		return await httpCLient
@@ -19,7 +19,7 @@ export const summarizationService = {
 			.then((response) => response.data)
 			.catch((error) => console.log(error.response.data.message));
 	},
-	async getWithQuery(query: string): Promise<PDF_Request | undefined> {
+	async uploadFile(query: string): Promise<PDF_Request | undefined> {
 		return await this.post('/', { userInput: query });
 	},
 };
