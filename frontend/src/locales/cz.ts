@@ -1,3 +1,6 @@
 export default {
-	helloWorld: 'Cus vole'
+	helloWorld: 'Cus vole',
+	summarize: {
+		inputPlaceholder: 'Placeholder',
+	},
 };
