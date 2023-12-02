@@ -3,7 +3,7 @@ version: '3.3'
 services:
   backend:
     container_name: backend
-    build:
+    build: 
       context: ./backend
     ports:
       - "8000:8000"

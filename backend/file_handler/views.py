@@ -2,34 +2,41 @@ import uuid
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import os
+from django.shortcuts import render
 
-@csrf_exempt  # idk what is this
-def upload_file(request):
-    if request.method == 'POST' and request.FILES.get('summarize_file'):
-        file = request.FILES['summarize_file']
+# Create your views here.
 
-        # now we save only a PDF
-        if file.name.endswith('.pdf'):
-            # Create a directory to save uploaded files if it doesn't exist
-            upload_dir = 'files'
-            if not os.path.exists(upload_dir):
-                os.makedirs(upload_dir)
+from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from .serializers import FileUploadSerializer
 
-            # Save the uploaded PDF file to the server
-            file_id = unique_file_name(file.name)
-            with open(os.path.join(upload_dir, file_id), 'wb') as destination:
-                for chunk in file.chunks():
-                    destination.write(chunk)
 
-            print('PDF file uploaded successfully')
-            return JsonResponse({'message': 'PDF file uploaded successfully', 'file_id': file_id})
-        else:
-            return JsonResponse({'error': 'Uploaded file is not a PDF'}, status=400)
-    else:
-        return JsonResponse({'error': 'No PDF file uploaded or invalid request'}, status=400)
+class FileUploadView(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, format=None):
+        serializer = FileUploadSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # run the content of the file through OpenAI
+            print(serializer.data)
+
+            # TODO: this does not work - no attribute is file
+            # for chunk in serializer.data.file.chunks():
+            #     print(chunk)
+
+            return Response(
+                {"recreated_pdf": "here will be the summarized file"},
+                status=status.HTTP_201_CREATED,
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 def unique_file_name(name):
-    file_extension = os.path.splitext(name)[1] if '.' in name else ''
+    file_extension = os.path.splitext(name)[1] if "." in name else ""
     generated_uuid = str(uuid.uuid4())
     unique_name = generated_uuid + file_extension
     return unique_name
