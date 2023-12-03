@@ -59,3 +59,6 @@ manage.py
 drf_example
 
 files/
+
+# all migrations folders (inside all django apps)
+**/migrations/

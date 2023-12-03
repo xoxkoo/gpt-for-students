@@ -9,6 +9,8 @@ services:
       - "8000:8000"
     volumes:
       - ./backend:/app
+    env_file:
+      - .env
 
   frontend:
     container_name: frontend
