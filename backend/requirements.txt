@@ -1,8 +1,9 @@
 django
 djangorestframework
 django-cors-headers
-PyPDF2
 langchain
 openai
 tiktoken
 faiss-cpu
+reportlab
+pypdf
