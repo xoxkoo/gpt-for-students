@@ -58,6 +58,7 @@ manage.py
 # example database
 drf_example
 
+#generated files
 files/
 
 # all migrations folders (inside all django apps)
