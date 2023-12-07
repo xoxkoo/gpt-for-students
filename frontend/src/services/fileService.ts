@@ -5,7 +5,7 @@ import { PDF_Request } from '../model';
 const httpCLient = axios.create();
 
 export const fileService = {
-	url: `${ENDPOINT_URL}upload`,
+	url: `${ENDPOINT_URL}file_handler`,
 
 	async get(endopint: string) {
 		return await httpCLient

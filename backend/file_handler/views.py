@@ -20,6 +20,8 @@ class FileUploadView(APIView):
     def post(self, request, format=None):
         serializer = FileUploadSerializer(data=request.data)
 
+        print(request.data)
+        print(serializer.is_valid())
         if serializer.is_valid():
             uploaded_file = serializer.validated_data["file"]
 

@@ -6,7 +6,7 @@ services:
     build:
       context: ./backend
     ports:
-      - "8000:8000"
+      - '8000:8000'
     volumes:
       - ./backend:/app
     env_file:
@@ -19,6 +19,7 @@ services:
     ports:
       - "5173:5173"
     depends_on:
-      - backend
+    - backend
     volumes:
       - ./frontend:/app
+      - /app/node_modules/

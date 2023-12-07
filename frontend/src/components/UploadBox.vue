@@ -1,8 +1,8 @@
 <template>
 	<div class="card">
 		<FileUpload
-			name="summarize_file"
-			:url="`${ENDPOINT_URL}upload/`"
+			name="file"
+			:url="`${ENDPOINT_URL}file_handler/`"
 			mode="advanced"
 			:auto="true"
 			@upload="onUpload"
