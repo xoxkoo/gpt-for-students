@@ -6,15 +6,21 @@ from langchain.document_loaders import PyPDFLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 
+"""
+    Accepts file path and summarizes its content
+
+    :param filePath: Description of the first parameter.
+    :return: String containing summarized content.
+"""
 def summarizeFile(filePath):
     query = """
-            I have an exam tomorrow, and I need to summarize given context to prepare efficiently. 
-            This given context contains important information related to my exam. 
-            Considering the urgency, I'd like you to help me generate a concise summary that covers the key points. 
-            Please ensure the summary is within a limit of 10% of the original content, rounded up. 
-            Your assistance in providing a focused and comprehensive summary would be greatly appreciated. 
+            I have an exam tomorrow, and I need to summarize given context to prepare efficiently.
+            This given context contains important information related to my exam.
+            Considering the urgency, I'd like you to help me generate a concise summary that covers the key points.
+            Please ensure the summary is within a limit of 10% of the original content, rounded up.
+            Your assistance in providing a focused and comprehensive summary would be greatly appreciated.
             Please highlight important facts of the context, use italics for citations, bold for headers, code blocks, unordered and ordered lists, and ensure the summary is concise. Be creative in presenting the information.
-            Format the response in html language, dont include css styles, make sure to use the correct tags: 
+            Format the response in html language, dont include css styles, make sure to use the correct tags:
             The bold text tag <b>
             The italic text tag <i>
             The heading tags <h1> to <h6>
@@ -31,10 +37,15 @@ def summarizeFile(filePath):
             Also exclude the tag <para>
             """
 
-    # TODO: create a pdf from the response
     return query_file(filePath, query)
 
+"""
+    Querys a file a returns a response based of the query parameter
 
+    :param filePath: Description of the first parameter.
+    :param query: Query that acts as an input for the similarity_serach().
+    :return: String that contains content based on the content of the provided file and the query.
+"""
 def query_file(filePath, query):
     loader = PyPDFLoader(filePath)
     pages = loader.load_and_split()
@@ -53,8 +64,13 @@ def query_file(filePath, query):
     print(f"response: {response}")
     return response
 
+"""
+    Generates pdf file from a HTML formatted context
 
-def generatePdf(context):
+    :param htmlContext: String context with the HTML formatting to be converted into pdf.
+    :return: PDF file. buffer
+"""
+def generatePdf(htmlContext):
     from io import BytesIO
     from html.parser import HTMLParser
     from reportlab.lib.pagesizes import letter
@@ -116,7 +132,7 @@ def generatePdf(context):
             self.buffer.append(cleaned_data)
 
     parser = MyHTMLParser()
-    parser.feed(context)
+    parser.feed(htmlContext)
     parser.close()
 
     doc = SimpleDocTemplate(buffer, pagesize=letter)
