@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from file_handler.models import UploadedFile
-from file_handler.utils import query_file
+from backend.common.utils import query_file
 from .serializers import FileQueryAnswerSerializer
 
 # Create your views here.

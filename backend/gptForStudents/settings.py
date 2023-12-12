@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "corsheaders",
     "file_handler",
     "chatter",
+    "summarizer",
 ]
 
 MIDDLEWARE = [
