@@ -5,7 +5,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import FileUploadSerializer
-from ..common.utils import summarizeFile, generatePdf
+from common.utils import summarizeFile, generatePdf
 from django.http import FileResponse
 
 ###
@@ -47,13 +47,9 @@ class FileUploadView(APIView):
                     # save file
                     saved_file = serializer.save()
                 else:
-                    return Response(
-                        saved_file.id, status=status.HTTP_400_BAD_REQUEST
-                    )
+                    return Response(saved_file.id, status=status.HTTP_400_BAD_REQUEST)
 
-            return Response(
-                       {"id": saved_file.id}, status=status.HTTP_200_OK
-                    )
+            return Response({"id": saved_file.id}, status=status.HTTP_200_OK)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
