@@ -1,0 +1,18 @@
+{
+	"CouldNotSummarizeFile": {
+		"code": 500,
+		"message": "CouldNotSummarizeFile"
+	},
+	"ValidationError": {
+		"code": 400,
+		"message": "Validation Error"
+	},
+	"NotFoundError": {
+		"code": 404,
+		"message": "Not Found"
+	},
+	"InternalServerError": {
+		"code": 500,
+		"message": "Internal Server Error"
+	}
+}

@@ -1,10 +1,62 @@
+import json
+import os
+import uuid
 from langchain.llms import OpenAI
 from langchain.chat_models import ChatOpenAI
 from langchain.chains.question_answering import load_qa_chain
+from langchain.text_splitter import CharacterTextSplitter
 from langchain.callbacks import get_openai_callback
 from langchain.document_loaders import PyPDFLoader
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
+from rest_framework import status
+from rest_framework.response import Response
+from langchain.memory import ConversationBufferMemory
+from langchain.chains import ConversationalRetrievalChain
+from PyPDF2 import PdfReader
+
+def get_pdf_text(file_path):
+    with open(file_path, 'rb') as pdf_file:
+        text = ""
+        try:
+            pdf_reader = PdfReader(pdf_file)
+            for page in pdf_reader.pages:
+                text += page.extract_text()
+        except Exception as e:
+            print(e)
+
+        return text
+
+def get_text_chunks(text):
+    text_splitter = CharacterTextSplitter(
+        separator="\n",
+        chunk_size=1000,
+        chunk_overlap=200,
+        length_function=len
+    )
+    chunks = text_splitter.split_text(text)
+    return chunks
+
+def get_vectorstore(text_chunks):
+    embeddings = OpenAIEmbeddings()
+    # embeddings = HuggingFaceInstructEmbeddings(model_name="hkunlp/instructor-xl")
+    vectorstore = FAISS.from_texts(texts=text_chunks, embedding=embeddings)
+    return vectorstore
+
+def get_conversation_chain(vectorstore):
+    llm = ChatOpenAI()
+    # llm = HuggingFaceHub(repo_id="google/flan-t5-xxl", model_kwargs={"temperature":0.5, "max_length":512})
+
+    memory = ConversationBufferMemory(
+        memory_key='chat_history', return_messages=True)
+    conversation_chain = ConversationalRetrievalChain.from_llm(
+        llm=llm,
+        retriever=vectorstore.as_retriever(),
+        memory=memory
+    )
+    return conversation_chain
+
+
 
 """
     Accepts file path and summarizes its content
@@ -51,7 +103,12 @@ def query_file(filePath, query):
     pages = loader.load_and_split()
 
     embeddings = OpenAIEmbeddings()
-    VectorStore = FAISS.from_documents(pages, embedding=embeddings)
+
+    try :
+        VectorStore = FAISS.from_documents(pages, embedding=embeddings)
+    except:
+        print("Could not summarize PDF")
+        raise Exception('Could not summarize PDF')
 
     docs = VectorStore.similarity_search(query=query, k=3)
 
@@ -61,8 +118,15 @@ def query_file(filePath, query):
     with get_openai_callback() as cb:
         response = chain.run(input_documents=docs, question=query)
 
-    print(f"response: {response}")
+    # print(f"response: {response}")
     return response
+
+def unique_file_name(name):
+    file_extension = os.path.splitext(name)[1] if "." in name else ""
+    generated_uuid = str(uuid.uuid4())
+    unique_name = generated_uuid + file_extension
+    return unique_name
+
 
 """
     Generates pdf file from a HTML formatted context
@@ -140,3 +204,13 @@ def generatePdf(htmlContext):
 
     buffer.seek(0)
     return buffer
+
+
+def APIResponse(title):
+    with open('errors.json') as f:
+        errors = json.load(f)
+
+    if (errors[title]):
+        return Response(errors[title]['message'], status=errors[title]['code'])
+    else:
+        return Response('SomethingWrong', status=status.HTTP_500_INTERNAL_SERVER_ERROR)

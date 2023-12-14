@@ -2,6 +2,7 @@ django
 djangorestframework
 django-cors-headers
 langchain
+PyPDF2
 openai
 tiktoken
 faiss-cpu

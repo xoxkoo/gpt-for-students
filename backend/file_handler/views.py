@@ -1,3 +1,4 @@
+import io
 import uuid
 import os
 from rest_framework import status
@@ -5,7 +6,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import FileUploadSerializer
-from .utils import summarizeFile, generatePdf
+from .utils import summarizeFile, generatePdf, get_pdf_text, unique_file_name, get_text_chunks,get_vectorstore
 from django.http import FileResponse
 
 ###
@@ -20,8 +21,6 @@ class FileUploadView(APIView):
     def post(self, request, format=None):
         serializer = FileUploadSerializer(data=request.data)
 
-        print(request.data)
-        print(serializer.is_valid())
         if serializer.is_valid():
             uploaded_file = serializer.validated_data["file"]
 
@@ -45,30 +44,35 @@ class FileUploadView(APIView):
                     serializer.validated_data["file"].name = unique_file_name(
                         serializer.validated_data["file"].name
                     )
+                    file_name = serializer.validated_data["file"].name
 
                     # save file
                     serializer.save()
 
-                    # summarize the pdf
-                    summarized_context = summarizeFile(
-                        f"files/{file_name}.{file_extension}"
-                    )
+                    print(file_name)
 
-                    generated_pdf = generatePdf(summarized_context)
+                    print(get_vectorstore(get_text_chunks(get_pdf_text(f"files/{file_name}"))).similarity_search('Who is author?')[0])
+                    # summarize the pdf
+                    # try:
+                    #     summarized_context = summarizeFile(
+                    #         f"files/{file_name}"
+                    #     )
+                    # except:
+                    #     return Response(
+                    #         "Could not summarize PDF", status=status.HTTP_500_INTERNAL_SERVER_ERROR
+                    #     )
+                    summarized_context = ''
+
+                    # generated_pdf = generatePdf(summarized_context)
+
+                    return Response(summarized_context, status=status.HTTP_200_OK)
                 else:
                     return Response(
                         "Uploaded file is not a PDF", status=status.HTTP_400_BAD_REQUEST
                     )
 
-            return FileResponse(
-                generated_pdf, as_attachment=True, filename="output.pdf"
-            )
+            # return FileResponse(
+            #     generated_pdf, as_attachment=True, filename="output.pdf"
+            # )
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-def unique_file_name(name):
-    file_extension = os.path.splitext(name)[1] if "." in name else ""
-    generated_uuid = str(uuid.uuid4())
-    unique_name = generated_uuid + file_extension
-    return unique_name
