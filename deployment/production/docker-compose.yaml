@@ -1,0 +1,37 @@
+version: '3.3'
+
+services:
+  backend:
+    container_name: backend
+    build: 
+      context: ../../backend
+    expose:
+      - "8000"
+    volumes:
+      - ../../backend:/app
+    env_file:
+      - .env
+    command: gunicorn gptForStudents.wsgi:application -w 4 -b 0.0.0.0:8000
+
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ../../frontend
+    expose:
+      - "80"
+    depends_on:
+      - backend
+    volumes:
+      - ../../frontend:/app
+
+  nginx:
+    container_name: nginx
+    image: nginx:latest
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ../../frontend/dist:/usr/share/nginx/html
