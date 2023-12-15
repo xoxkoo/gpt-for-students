@@ -34,6 +34,7 @@ const { t } = useI18n();
 const emits = defineEmits(['onUpload']);
 
 const onUpload = (response: any) => {
+	// TODO remake this as service
 	console.log(response);
 
 	if (response.xhr.status == 200) {

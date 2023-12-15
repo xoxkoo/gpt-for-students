@@ -1,25 +1,25 @@
 import axios from 'axios';
 import { ENDPOINT_URL } from '../utils/constants';
-import { PDF_Request } from '../model';
 
-const httpCLient = axios.create();
+const httpClient = axios.create();
 
 export const chatService = {
-	url: `${ENDPOINT_URL}chat`,
+	url: `${ENDPOINT_URL}chatter/`,
+	// /chatter/?fileId=1&query="What is the document about?"
 
-	async get(endopint: string) {
-		return await httpCLient
-			.get(`${this.url}${endopint}`)
+	async get(query: string) {
+		return await httpClient
+			.get(`${this.url}?${query}`)
 			.then((response) => response.data)
 			.catch((error) => console.log(error.response.data.message));
 	},
-	async post(endopint: string, data: any) {
-		return await httpCLient
-			.post(`${this.url}${endopint}`, data)
+	async post(endpoint: string, data: any) {
+		return await httpClient
+			.post(`${this.url}${endpoint}`, data)
 			.then((response) => response.data)
 			.catch((error) => console.log(error.response.data.message));
 	},
-	async postQuestion(query: string): Promise<PDF_Request | undefined> {
-		return await this.post('/', { userInput: query });
+	async queryFile(fileId: number, query: string): Promise<string> {
+		return await this.get(`fileId=${fileId}&query=${query}`);
 	},
 };
