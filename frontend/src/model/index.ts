@@ -1,3 +1,9 @@
-export type PDF_Request = {
-
+export enum ConversationAuthor {
+	GPT = 'gpt',
+	USER = 'user',
 }
+
+export type Conversation = {
+	author: ConversationAuthor;
+	message: string;
+};

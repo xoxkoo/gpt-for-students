@@ -1,0 +1,19 @@
+.message-list {
+	height: 75vh;
+	overflow-y: scroll;
+}
+
+.message-bubble {
+	.p-panel-header {
+		border-bottom-color: transparent;
+		padding: 0.25rem 1rem;
+	}
+	.p-panel-content {
+		padding-top: 0;
+	}
+}
+.message-bubble.bubble-gpt .p-panel-header,
+.message-bubble.bubble-gpt .p-panel-content {
+	// padding: 1rem;
+	background-color: $c-border;
+}
