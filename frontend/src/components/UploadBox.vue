@@ -1,11 +1,13 @@
 <template>
+	<Toast />
 	<div class="card">
 		<FileUpload
-			name="summarize_file"
-			:url="`${ENDPOINT_URL}upload/`"
+			name="file"
+			:url="`${ENDPOINT_URL}file_handler/`"
 			mode="advanced"
 			:auto="true"
 			@upload="onUpload"
+			@error="onError"
 			:multiple="false"
 			accept=".pdf"
 			:maxFileSize="1048576"
@@ -21,17 +23,32 @@
 </template>
 
 <script setup lang="ts">
-import { ENDPOINT_URL } from '../utils/constants';
+import { useI18n } from 'vue-i18n';
+import { ENDPOINT_URL, TOAST_LIFE } from '../utils/constants';
+import { useToast } from 'primevue/usetoast';
+// import { errors } from '../../../errors.json';
+// type ErrorResponse = keyof typeof errors;
 
-const onUpload = (request: any) => {
-	// Handle the response here
-	if (request.xhr.status == 200) {
-		const response = JSON.parse(request.xhr.response);
+const toast = useToast();
+const { t } = useI18n();
+const emits = defineEmits(['onUpload']);
 
-		if (response && response.file_id) {
-			const { file_id } = response;
-			console.log(file_id);
-		}
+const onUpload = (response: any) => {
+	// TODO remake this as service
+	console.log(response);
+
+	if (response.xhr.status == 200) {
+		const responseText = response.xhr.response;
+		console.log(responseText);
+		emits('onUpload', responseText);
 	}
+};
+const onError = (response: any) => {
+	toast.add({
+		severity: 'error',
+		summary: t('toast.error'),
+		detail: t(`summarize.error.${response.xhr.status}`),
+		life: TOAST_LIFE,
+	});
 };
 </script>

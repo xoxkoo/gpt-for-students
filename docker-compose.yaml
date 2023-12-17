@@ -3,10 +3,10 @@ version: '3.3'
 services:
   backend:
     container_name: backend
-    build: 
+    build:
       context: ./backend
     ports:
-      - "8000:8000"
+      - '8000:8000'
     volumes:
       - ./backend:/app
     env_file:
@@ -17,8 +17,9 @@ services:
     build:
       context: ./frontend
     ports:
-      - "5173:5173"
+      - '5173:5173'
     depends_on:
       - backend
     volumes:
       - ./frontend:/app
+      - /app/node_modules/
