@@ -7,3 +7,4 @@ tiktoken
 faiss-cpu
 reportlab
 pypdf
+gunicorn

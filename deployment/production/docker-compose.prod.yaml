@@ -18,6 +18,8 @@ services:
     container_name: frontend
     build:
       context: ../../frontend
+    ports:
+      - "5173:5173"
     expose:
       - "80"
     depends_on:
