@@ -3,7 +3,6 @@ version: '3.3'
 services:
   backend:
     container_name: backend
-    # platform: linux/amd64
     build:
       context: ./backend
     ports:
