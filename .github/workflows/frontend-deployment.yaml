@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gpt-frontend
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: gpt-frontend
+  template:
+    metadata:
+      labels:
+        app: gpt-frontend
+    spec:
+      containers:
+        - name: gpt-frontend-container
+          image: gptstudentapp.azurecr.io/gpt-frontend:latest
+          ports:
+            - containerPort: 8080

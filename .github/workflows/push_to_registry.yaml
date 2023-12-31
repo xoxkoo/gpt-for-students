@@ -1,0 +1,52 @@
+docker login gptstudentapp.azurecr.io
+cd backend/
+docker build -t gpt-backend .
+
+cd frontend
+docker build -t gpt-frontend .
+
+docker tag gpt-backend gptstudentapp.azurecr.io/gpt-backend:latest
+docker tag gpt-frontend gptstudentapp.azuredoccr.io/gpt-frontend:latest
+
+docker push gptstudentapp.azurecr.io/gpt-backend:latest
+docker push gptstudentapp.azurecr.io/gpt-frontend:latest
+
+trigger:
+- main  # Change this to your branch or trigger condition
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- task: Docker@2
+  displayName: 'Login to Azure Container Registry'
+  inputs:
+    command: 'login'
+    containerRegistry: '<your-azure-container-registry-service-connection>'
+    dockerRegistryEndpoint: '<your-azure-container-registry-service-connection>'
+
+- script: |
+    docker build -t gpt-backend ./backend
+    docker build -t gpt-frontend ./frontend
+  displayName: 'Build Docker Images'
+
+- script: |
+    docker tag gpt-backend gptstudentapp.azurecr.io/gpt-backend:latest
+    docker tag gpt-frontend gptstudentapp.azurecr.io/gpt-frontend:latest
+  displayName: 'Tag Docker Images'
+
+- task: Docker@2
+  displayName: 'Push Docker Images to Azure Container Registry'
+  inputs:
+    command: 'push'
+    containerRegistry: '<your-azure-container-registry-service-connection>'
+    repository: 'gptstudentapp.azurecr.io/gpt-backend'
+    tags: 'latest'
+
+- task: Docker@2
+  displayName: 'Push Docker Images to Azure Container Registry'
+  inputs:
+    command: 'push'
+    containerRegistry: '<your-azure-container-registry-service-connection>'
+    repository: 'gptstudentapp.azurecr.io/gpt-frontend'
+    tags: 'latest'

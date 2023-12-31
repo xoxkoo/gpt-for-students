@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gpt-frontend
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+spec:
+  rules:
+    - http:
+        paths:
+          - pathType: Prefix
+            path: /frontend
+            backend:
+              service:
+                name: frontend-service
+                port:
+                  number: 80
