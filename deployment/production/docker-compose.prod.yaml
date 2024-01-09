@@ -11,8 +11,7 @@ services:
       - ../../backend:/app
     env_file:
       - .env
-    command: gunicorn gptForStudents.wsgi:application -w 4 -b 0.0.0.0:8000
-
+    command: gunicorn gptForStudents.wsgi:application -w 4 -b 0.0.0.0:8000 --access-logfile - --error-logfile -
 
   frontend:
     container_name: frontend
