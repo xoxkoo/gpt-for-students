@@ -1,35 +1,33 @@
 <template>
-	<div class="container mt-20 mx-auto">
+	<div class="container mt-5 mx-auto">
 		<div class="flex flex-col align-center">
-			<!-- <p class="text-sm">{{ $t('summarize.uploadYourFile') }}</p> -->
-			<UploadBox v-if="!conversation.length && !fileId" @on-upload="onFileUpload" />
-
-			<div v-else>
-				<!-- <Panel class="mt-10" :header="$t('summarize.responseHeader')"> -->
-				<!-- <template #header>
-						<Button :label="$t('summarize.buttonReupload')" icon="pi pi-check" @click="summarizedResponse = ''" />
-					</template> -->
-				<div class="message-list">
-					<MessageBubble
-						v-for="(bubble, index) in conversation"
-						:key="index"
-						:author="bubble.author"
-						:message="bubble.message"
-					/>
-				</div>
-				<InputText
-					v-model="message"
-					@submit="onInputSubmit()"
-					@keyup.enter="onInputSubmit()"
-					ref="inputRef"
-					type="text"
-					class="mt-10 w-full"
-				/>
-				<!-- <template #footer>
-						<Button :label="$t('summarize.submit')" icon="pi pi-check" @click="onInputSubmit()" />
-					</template> -->
-				<!-- </Panel> -->
-			</div>
+			<TabView v-model:active-index="active">
+				<TabPanel :header="$t(`summarizationTab.upload`)">
+					<UploadBox @on-upload="onFileUpload" />
+				</TabPanel>
+				<TabPanel :header="$t(`summarizationTab.chat`)" :disabled="!fileId">
+					<div class="message-list">
+						<MessageBubble
+							v-for="(bubble, index) in conversation"
+							:key="index"
+							:author="bubble.author"
+							:message="bubble.message"
+						/>
+					</div>
+					<div class="flex mt-10">
+						<InputText
+							v-model="message"
+							@submit="onInputSubmit()"
+							@keyup.enter="onInputSubmit()"
+							ref="inputRef"
+							type="text"
+							class="w-full mr-5"
+						/>
+						<Button aria-label="refresh" icon="pi pi-refresh" @click="onReset"></Button>
+					</div>
+				</TabPanel>
+				<TabPanel :header="$t(`summarizationTab.summarize`)" :disabled="!fileId"> </TabPanel>
+			</TabView>
 		</div>
 	</div>
 </template>
@@ -42,19 +40,19 @@ import UploadBox from '../components/UploadBox.vue';
 import MessageBubble from '../components/MessageBubble.vue';
 import { Conversation, ConversationAuthor } from '../model';
 import { onMounted } from 'vue';
+import { DEFAULT_MESSAGE } from '../utils/constants';
 const message = ref<string>('');
 const response = ref<string>('');
 const conversation = ref<Conversation[]>([]);
 const fileId = ref<number>(0);
 const inputRef = ref<HTMLInputElement>(null);
+const active = ref(0);
 
 const onInputSubmit = async () => {
 	if (!fileId.value) {
 		fileId.value = JSON.parse(localStorage.getItem('fileId'));
 	}
 	if (removeSpecialChar(message.value)) {
-		console.log(conversation.value);
-
 		conversation.value.push({ author: ConversationAuthor.USER, message: message.value });
 		const tmp = message.value;
 		message.value = '';
@@ -65,16 +63,33 @@ const onInputSubmit = async () => {
 	}
 };
 const onFileUpload = (response: string) => {
+	removeConversation();
 	fileId.value = JSON.parse(response).id;
+
 	localStorage.setItem('fileId', JSON.stringify(fileId.value));
+	conversation.value.push(DEFAULT_MESSAGE[0]);
+	saveConversation();
+	active.value = 1;
 };
 
 const saveConversation = () => {
 	localStorage.setItem('conversation', JSON.stringify(conversation.value));
 };
 
+const removeConversation = () => {
+	if (localStorage.getItem('conversation')) localStorage.removeItem('conversation');
+	if (localStorage.getItem('fileId')) localStorage.removeItem('fileId');
+
+	conversation.value = [];
+	fileId.value = undefined;
+};
+
 const fetchConversation = () => {
 	if (localStorage.getItem('conversation')) conversation.value = JSON.parse(localStorage.getItem('conversation'));
+};
+
+const onReset = () => {
+	removeConversation();
 };
 
 onMounted(() => {
