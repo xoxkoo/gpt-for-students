@@ -35,11 +35,8 @@ const emits = defineEmits(['onUpload']);
 
 const onUpload = (response: any) => {
 	// TODO remake this as service
-	console.log(response);
-
 	if (response.xhr.status == 200) {
 		const responseText = response.xhr.response;
-		console.log(responseText);
 		emits('onUpload', responseText);
 	}
 };
