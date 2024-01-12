@@ -1,5 +1,5 @@
 <template>
-	<Panel class="message-bubble mb-5" :class="`bubble-${author}`" :header="$t(`messages.${author}`)">
+	<Panel loading class="message-bubble mb-5" :class="`bubble-${author}`" :header="$t(`messages.${author}`)">
 		<template #icons> <Button icon="pi pi-bookmark" severity="secondary" rounded text></Button> </template>
 		{{ message }}
 	</Panel>

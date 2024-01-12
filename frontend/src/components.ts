@@ -7,6 +7,8 @@ import Panel from 'primevue/panel';
 import FileUpload from 'primevue/fileupload';
 import InputText from 'primevue/inputtext';
 import Card from 'primevue/card';
+import TabView from 'primevue/tabview';
+import TabPanel from 'primevue/tabpanel';
 import ScrollPanel from 'primevue/scrollpanel';
 
 export default function registerComponents(app: App) {
@@ -16,5 +18,7 @@ export default function registerComponents(app: App) {
 	app.component('FileUpload', FileUpload);
 	app.component('InputText', InputText);
 	app.component('ScrollPanel', ScrollPanel);
+	app.component('TabView', TabView);
+	app.component('TabPanel', TabPanel);
 	app.component('Card', Card);
 }
