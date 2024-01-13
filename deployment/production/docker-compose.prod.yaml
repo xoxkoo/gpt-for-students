@@ -2,11 +2,11 @@ version: '3.3'
 
 services:
   backend:
-    container_name: backend
-    build: 
+    container_name: backend-prod
+    build:
       context: ../../backend
     expose:
-      - "8000"
+      - '8000'
     volumes:
       - ../../backend:/app
     env_file:
@@ -14,11 +14,11 @@ services:
     command: gunicorn gptForStudents.wsgi:application -w 4 -b 0.0.0.0:8000 --access-logfile - --error-logfile -
 
   frontend:
-    container_name: frontend
+    container_name: frontend-prod
     build:
       context: ../../frontend
     expose:
-      - "80"
+      - '80'
     depends_on:
       - backend
     volumes:
@@ -28,7 +28,7 @@ services:
     container_name: nginx
     image: nginx:latest
     ports:
-      - "80:80"
+      - '80:80'
     depends_on:
       - frontend
     volumes:
